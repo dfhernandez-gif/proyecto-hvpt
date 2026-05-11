@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import authService from '../../services/authService';
 
 interface Tournament {
@@ -8,11 +9,19 @@ interface Tournament {
 }
 
 export default function Dashboard() {
+
+  const navigate = useNavigate();
+
   const user = authService.currentUser();
 
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
 
   const [name, setName] = useState('');
+
+  // VOLVER AL DASHBOARD
+  const goToDashboard = () => {
+    navigate('/dashboard');
+  };
 
   const createTournament = () => {
     if (!name.trim()) return;
@@ -35,6 +44,30 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-green-100 p-8">
+
+      {/* BOTON VOLVER */}
+      <div
+        onClick={goToDashboard}
+        className="
+          flex
+          items-center
+          gap-2
+          cursor-pointer
+          mb-8
+          hover:opacity-70
+          transition
+        "
+      >
+
+        <span className="material-symbols-outlined">
+          arrow_back
+        </span>
+
+        <p className="font-semibold text-lg">
+          Volver al Dashboard
+        </p>
+
+      </div>
 
       {/* TITULO */}
       <div className="mb-8">
