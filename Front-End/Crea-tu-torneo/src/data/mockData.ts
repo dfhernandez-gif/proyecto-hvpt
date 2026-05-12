@@ -13,3 +13,4 @@ export const teams: Team[] = [
 export const tournaments: Tournament[] = [
   { id:1, name:'Copa Elite', owner:'Admin', teamIds:[1] }
 ];
+

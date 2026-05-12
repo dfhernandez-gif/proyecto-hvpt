@@ -1,5 +1,6 @@
 import { users } from '../data/mockData';
 
+
 class AuthService {
   login(email:string, password:string) {
     const user = users.find(u => u.email === email && u.password === 'password');
