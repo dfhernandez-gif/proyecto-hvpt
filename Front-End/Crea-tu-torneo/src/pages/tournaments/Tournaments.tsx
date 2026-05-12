@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import authService from '../../services/authService';
+import tournamentService from '../../services/tournamentService';
 
 interface Tournament {
   id: number;
@@ -8,44 +10,62 @@ interface Tournament {
   owner: string;
 }
 
-export default function Dashboard() {
+export default function Tournaments() {
 
   const navigate = useNavigate();
 
   const user = authService.currentUser();
 
-  const [tournaments, setTournaments] = useState<Tournament[]>([]);
-
   const [name, setName] = useState('');
 
-  // VOLVER AL DASHBOARD
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
+
+  // CARGAR TORNEOS
+  useEffect(() => {
+
+    const allTournaments =
+      tournamentService.getAll();
+
+    setTournaments(allTournaments);
+
+  }, []);
+
+  // VOLVER
   const goToDashboard = () => {
     navigate('/dashboard');
   };
 
+  // CREAR
   const createTournament = () => {
+
     if (!name.trim()) return;
 
-    const newTournament: Tournament = {
-      id: Date.now(),
+    tournamentService.create(
       name,
-      owner: user?.name || 'Administrador',
-    };
+      user?.name || 'Administrador'
+    );
 
-    setTournaments([...tournaments, newTournament]);
+    setTournaments([
+      ...tournamentService.getAll()
+    ]);
+
     setName('');
   };
 
+  // ELIMINAR
   const deleteTournament = (id: number) => {
-    setTournaments(
-      tournaments.filter(tournament => tournament.id !== id)
-    );
+
+    tournamentService.delete(id);
+
+    setTournaments([
+      ...tournamentService.getAll()
+    ]);
   };
 
   return (
-    <div className="min-h-screen bg-green-100 p-8">
+    <div className="min-h-screen bg-green-200 p-8">
 
-      {/* BOTON VOLVER */}
+      {/* VOLVER */}
       <div
         onClick={goToDashboard}
         className="
@@ -59,34 +79,51 @@ export default function Dashboard() {
         "
       >
 
-        <span className="material-symbols-outlined">
+        <span className="material-symbols-outlined text-gray-800">
           arrow_back
         </span>
 
-        <p className="font-semibold text-lg">
+        <p className="font-semibold text-lg text-gray-800">
           Volver al Dashboard
         </p>
 
       </div>
 
       {/* TITULO */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">
+      <div className="mb-8 text-center">
+
+        <h1 className="text-5xl font-bold text-black">
           Bienvenido, {user?.name}
         </h1>
 
-        <p className="text-gray-600 mt-2">
+        <p className="text-black mt-4 text-xl">
           Gestiona tus torneos y equipos.
         </p>
+
       </div>
 
       {/* GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        {/* CARD CREAR TORNEO */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8">
+        {/* CREAR */}
+        <div
+          className="
+            bg-white
+            rounded-3xl
+            shadow-2xl
+            p-8
+          "
+        >
 
-          <h2 className="text-3xl font-bold mb-6">
+          <h2
+            className="
+              text-3xl
+              font-bold
+              mb-6
+              text-gray-800
+              text-center
+            "
+          >
             Crear Torneo
           </h2>
 
@@ -96,15 +133,16 @@ export default function Dashboard() {
               type="text"
               placeholder="Nombre del torneo"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) =>
+                setName(e.target.value)
+              }
               className="
                 border
                 border-gray-300
                 rounded-xl
                 p-4
+                text-gray-800
                 outline-none
-                focus:ring-2
-                focus:ring-green-400
               "
             />
 
@@ -124,23 +162,43 @@ export default function Dashboard() {
             </button>
 
           </div>
+
         </div>
 
-        {/* CARD LISTADO */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8">
+        {/* LISTADO */}
+        <div
+          className="
+            bg-white
+            rounded-3xl
+            shadow-2xl
+            p-8
+          "
+        >
 
-          <h2 className="text-3xl font-bold mb-6">
+          <h2
+            className="
+              text-3xl
+              font-bold
+              mb-6
+              text-gray-800
+              text-center
+            "
+          >
             Torneos Creados
           </h2>
 
           {tournaments.length === 0 ? (
-            <p className="text-gray-500">
+
+            <p className="text-center text-gray-500">
               No hay torneos creados.
             </p>
+
           ) : (
+
             <div className="flex flex-col gap-4">
 
               {tournaments.map((tournament) => (
+
                 <div
                   key={tournament.id}
                   className="
@@ -151,23 +209,35 @@ export default function Dashboard() {
                     flex
                     justify-between
                     items-center
-                    hover:bg-gray-50
-                    transition
                   "
                 >
 
                   <div>
-                    <h3 className="text-xl font-semibold">
+
+                    <h3
+                      className="
+                        text-xl
+                        font-semibold
+                        text-black
+                      "
+                    >
                       {tournament.name}
                     </h3>
 
                     <p className="text-gray-600">
-                      Organizador: {tournament.owner}
+                      Organizador:
+                      {' '}
+                      {tournament.owner}
                     </p>
+
                   </div>
 
                   <button
-                    onClick={() => deleteTournament(tournament.id)}
+                    onClick={() =>
+                      deleteTournament(
+                        tournament.id
+                      )
+                    }
                     className="
                       bg-red-500
                       hover:bg-red-600
@@ -175,16 +245,17 @@ export default function Dashboard() {
                       px-4
                       py-2
                       rounded-xl
-                      transition
                     "
                   >
                     Eliminar
                   </button>
 
                 </div>
+
               ))}
 
             </div>
+
           )}
 
         </div>

@@ -6,5 +6,10 @@ export const USERS: User[] = [
     name: 'Admin',
     email: 'admin@torneo.com',
     password: '123456'
+  }, {
+    id: 2,
+    name: 'Admin',
+    email: 'yojan@torneo.com',
+    password: '123456'
   }
 ];

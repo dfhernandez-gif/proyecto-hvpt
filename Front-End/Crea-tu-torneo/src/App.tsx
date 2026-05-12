@@ -9,6 +9,10 @@ import Tournaments from './pages/tournaments/Tournaments';
 import Notifications from './pages/notifications/Notifications';
 import Profile from './pages/profile/Profile';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import CreateTournament from './pages/tournaments/CreateTournament';
+import AllTournament from './pages/tournaments/AllTournament';
+import InfoTournament from './pages/tournaments/InfoTournament';
+import ViewCreatedTournament from './pages/tournaments/ViewCreatedTournament';
 
 export default function App() {
   return (
@@ -65,6 +69,27 @@ export default function App() {
               <Profile />
             </ProtectedRoute>
           }
+        />
+
+
+        <Route
+          path="/create-tournament"
+          element={<CreateTournament />}
+        />
+
+        <Route
+          path="/all-tournaments"
+          element={<AllTournament />}
+        />
+
+        <Route
+          path="/info-tournament"
+          element={<InfoTournament />}
+        />
+
+        <Route
+          path="/view-created"
+          element={<ViewCreatedTournament />}
         />
       </Routes>
     </BrowserRouter>
