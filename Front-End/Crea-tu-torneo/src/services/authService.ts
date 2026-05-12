@@ -3,7 +3,7 @@ import { users } from '../data/mockData';
 
 class AuthService {
   login(email:string, password:string) {
-    const user = users.find(u => u.email === email && u.password === 'password');
+    const user = users.find(u => u.email === email && u.password === password);
     if(user) localStorage.setItem('user', JSON.stringify(user));
     return user || null;
   }
